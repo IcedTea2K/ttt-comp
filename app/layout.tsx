@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={itim.className}>
       <body className="bg-[#F4F3EE] text-black">
-        <main className="min-h-screen flex flex-col items-center">
+        <main className="min-h-screen flex flex-col items-center py-2">
           {children}
         </main>
       </body>
