@@ -1,14 +1,19 @@
 import { GeistSans } from "geist/font/sans";
+import { Itim } from "next/font/google";
+
 import "./globals.css";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+const defaultUrl = "http://localhost:3000";
+
+const itim = Itim({
+  weight: '400',
+  subsets: ['latin']
+})
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Tic-Tac-Toe Competitive (but not really)",
+  description: "A way to play with your friend over the internet.",
 };
 
 export default function RootLayout({
@@ -17,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={GeistSans.className}>
-      <body className="bg-background text-foreground">
+    <html lang="en" className={itim.className}>
+      <body className="bg-[#F4F3EE] text-black">
         <main className="min-h-screen flex flex-col items-center">
           {children}
         </main>
