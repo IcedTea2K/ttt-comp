@@ -1,10 +1,14 @@
+import Image from "next/image"
+
 import carrot from "@/app/assets/carrot.png"
 import pear from "@/app/assets/pear.png"
-import Image from "next/image"
+import PlayArea from "./PlayArea"
+
 export default async function GamePlay() {
     return (
         <>
             <Header />
+            <PlayArea />
         </>
     ) 
 }
