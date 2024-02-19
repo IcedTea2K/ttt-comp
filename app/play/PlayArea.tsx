@@ -1,8 +1,10 @@
 'use client'
 import Image from "next/image"
-import { useState } from "react"
+import { MutableRefObject, useRef, useState } from "react"
 
 import grid from "@/app/assets/grid.png"
+import xPlayer from "@/app/assets/x-player.png"
+import oPlayer from "@/app/assets/o-player.png"
 
 export default function PlayArea() {
     const [cells, setCells] = useState(
@@ -13,6 +15,7 @@ export default function PlayArea() {
         ]
     )
     const [player, setPlayer] = useState(1)
+    const gridRef = useRef<HTMLImageElement | null>(null)
     const handleMove = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         event.preventDefault()
         let localX = event.pageX - event.currentTarget.offsetLeft
@@ -34,30 +37,43 @@ export default function PlayArea() {
     }
     return (
         <div className="p-6">
-            <Image className="z-20 relative" src={grid} alt="Tic-tac-toe grid" onClick={handleMove}/>
-            <div className="flex flex-col gap-y-8 absolute bottom-[3.8rem] z-10">
-                {cells.map(
-                    (vy, y) => (
-                        <div className="flex flex-rol gap-x-8 z-10" key={"row" + y}>
-                            {vy.map(
-                                (vx, x) => {
-                                    let color = "" 
-                                    if (vx == 1)
-                                        color = "bg-slate-950"
-                                    else if (vx == 2)
-                                        color = "bg-blue-500"
-                                    return (
-                                        <div 
-                                            className={"w-[10rem] h-[10rem] z-10 " + color} key={"cell: " + x + " " + y}>
-                                            
-                                        </div>
-                                    )
-                                }
-                            )}
-                        </div>
-                    )
-                )} 
-            </div>
+            <Image className="z-20 relative" src={grid} alt="Tic-tac-toe grid" onClick={handleMove}
+                ref={gridRef}/>
+            {markOnGrid(cells, gridRef)}
         </div>
     )
+}
+
+function markOnGrid(cells: number[][], gridRef: MutableRefObject<HTMLImageElement | null>) {
+    if (gridRef.current == null)
+        return []
+    let marks: JSX.Element[] = []
+    const offsetGridX = [
+        [7, 18, 27],
+        [7, 18, 27],
+        [7, 18, 27],
+    ]
+    const offsetGridY = [
+        [10, 10, 10],
+        [18, 18, 18],
+        [25, 25, 25],
+    ]
+    for (let y = 0; y < cells.length; y++) {
+        for (let x = 0; x < cells[y].length; x++) {
+            if (cells[y][x] == 0)
+                continue
+            let cellSize = gridRef.current.width / 3
+            let posX = gridRef.current.offsetLeft + cellSize * x + offsetGridX[y][x]
+            let posY = gridRef.current.offsetTop + cellSize * y + offsetGridY[y][x]
+            let style = {
+                left: posX,
+                top: posY
+            }
+            let player = cells[y][x] == 1 ? 
+                <Image className="absolute" src={xPlayer} alt="X mark" key={"x"+x+""+y} style={style}/> :
+                <Image className="absolute" src={oPlayer} alt="X mark" key={"o"+x+""+y} style={style}/>
+            marks.push(player)
+        } 
+    }
+    return marks
 }
