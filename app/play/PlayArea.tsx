@@ -1,10 +1,16 @@
 'use client'
 import Image from "next/image"
-import { MutableRefObject, useRef, useState } from "react"
+import { MutableRefObject, useRef, useState, useEffect } from "react"
 
 import grid from "@/app/assets/grid.png"
 import xPlayer from "@/app/assets/x-player.png"
 import oPlayer from "@/app/assets/o-player.png"
+
+enum GameStatus {
+    PENDING = "PENDING",
+    STARTED = "STARTED",
+    ENDED = "ENDED"
+}
 
 export default function PlayArea() {
     const [cells, setCells] = useState(
@@ -15,8 +21,29 @@ export default function PlayArea() {
         ]
     )
     const [player, setPlayer] = useState(1)
+    const [winner, setWinner] = useState(0)
+    const [gameStatus, setGameStatus] = useState(GameStatus.PENDING)
     const gridRef = useRef<HTMLImageElement | null>(null)
+    
+    useEffect(() => {
+        let potentialWinner = checkForWinner(cells)
+        
+        if (potentialWinner != 0) {
+            console.log("Player " + potentialWinner + " won!!!")
+            setWinner(potentialWinner)
+            setGameStatus(GameStatus.ENDED)
+        }
+    }, [cells])
+
     const handleMove = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+        if (gameStatus == GameStatus.ENDED) {
+            console.log("Game has already ended!")
+            return
+        } else if (gameStatus == GameStatus.PENDING) {
+            console.log("Game has been started!")
+            setGameStatus(GameStatus.STARTED)
+        }
+
         event.preventDefault()
         let localX = event.pageX - event.currentTarget.offsetLeft
         let localY = event.pageY - event.currentTarget.offsetTop
@@ -33,7 +60,7 @@ export default function PlayArea() {
                 })
             }
         )) 
-        setPlayer(player == 1 ? 2 : 1)
+        setPlayer(player == 1 ? -1 : 1)
     }
     return (
         <div className="p-6">
@@ -76,4 +103,29 @@ function markOnGrid(cells: number[][], gridRef: MutableRefObject<HTMLImageElemen
         } 
     }
     return marks
+}
+
+function checkForWinner(cells: number[][]) {
+    for (let y = 0; y < cells.length; y++) {
+        let horSum = 0;
+        let verSum = 0;
+        for (let x = 0; x < cells[y].length; x++) {
+            horSum += cells[y][x]
+            verSum += cells[x][y]
+        }
+
+        if (horSum == 3 || verSum == 3)
+            return 1
+        else if (horSum == -3 || verSum == -3)
+            return -1
+    }
+    let negSlopeSum = cells[0][0] + cells[1][1] + cells[2][2];
+    let posSlopeSum = cells[0][2] + cells[1][1] + cells[2][0];
+
+    if (negSlopeSum == 3 || posSlopeSum == 3)
+        return 1
+    else if (negSlopeSum == -3 || posSlopeSum == -3)
+        return -1
+
+    return 0
 }
