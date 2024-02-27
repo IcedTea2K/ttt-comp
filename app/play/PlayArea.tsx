@@ -12,6 +12,11 @@ enum GameStatus {
     ENDED = "ENDED"
 }
 
+interface ButtonProps {
+    label: string,
+    handler: () => void
+}
+
 export default function PlayArea() {
     const [cells, setCells] = useState(
         [ 
@@ -63,10 +68,28 @@ export default function PlayArea() {
         setPlayer(player == 1 ? -1 : 1)
     }
     return (
-        <div className="p-6">
-            <Image className="z-20 relative" src={grid} alt="Tic-tac-toe grid" onClick={handleMove}
+        <div className="p-6 flex flex-row w-full">
+            <div className="flex flex-col gap-y-[1.5rem] justify-center items-center flex-1">
+                <RoundedButton label="Restart" handler={() => { console.log("Restart game")}}/>
+                <RoundedButton label="View History" handler={() => { console.log("View history")}}/>
+                <RoundedButton label="Leave Match" handler={() => { console.log("Leave match")}}/>
+            </div>
+            {/* <RoundedButton label="Restart" action={() => {}} /> */}
+            <Image className="z-20 relative flex-initial" src={grid} alt="Tic-tac-toe grid" onClick={handleMove}
                 ref={gridRef}/>
             {markOnGrid(cells, gridRef)}
+            <div className="flex-1">
+
+            </div>
+        </div>
+    )
+}
+
+function RoundedButton({label, handler}: ButtonProps) {
+    return (
+        <div className="bg-[#E0AFA0] hover:bg-[#E7C9BE] h-fit rounded-lg text-center
+            px-[2.2rem] py-[0.8rem] w-[10rem] cursor-pointer" onClick={handler}>
+            {label}
         </div>
     )
 }
