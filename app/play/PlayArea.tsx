@@ -40,6 +40,17 @@ export default function PlayArea() {
         }
     }, [cells])
 
+    const resetGame = () => {
+        setWinner(0)
+        setPlayer(1)
+        setGameStatus(GameStatus.PENDING)
+        setCells([
+            [ 0, 0, 0 ],
+            [ 0, 0, 0 ],
+            [ 0, 0, 0 ]
+        ])
+    }
+
     const handleMove = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         if (gameStatus == GameStatus.ENDED) {
             console.log("Game has already ended!")
@@ -70,7 +81,7 @@ export default function PlayArea() {
     return (
         <div className="p-6 flex flex-row w-full">
             <div className="flex flex-col gap-y-[1.5rem] justify-center items-center flex-1">
-                <RoundedButton label="Restart" handler={() => { console.log("Restart game")}}/>
+                <RoundedButton label="Restart" handler={resetGame}/>
                 <RoundedButton label="View History" handler={() => { console.log("View history")}}/>
                 <RoundedButton label="Leave Match" handler={() => { console.log("Leave match")}}/>
             </div>
