@@ -17,7 +17,7 @@ interface ButtonProps {
     handler: () => void
 }
 
-export default function PlayArea() {
+export default function PlayArea({playerOne, playerTwo} : {playerOne: string, playerTwo: string}) {
     const [cells, setCells] = useState(
         [ 
             [ 0, 0, 0 ],
@@ -26,6 +26,7 @@ export default function PlayArea() {
         ]
     )
     const [player, setPlayer] = useState(1)
+    const [tally, setTally] = useState([0, 0])
     const [winner, setWinner] = useState(0)
     const [gameStatus, setGameStatus] = useState(GameStatus.PENDING)
     const gridRef = useRef<HTMLImageElement | null>(null)
@@ -39,6 +40,13 @@ export default function PlayArea() {
             setGameStatus(GameStatus.ENDED)
         }
     }, [cells])
+
+    useEffect(() => {
+        if (winner == 1)
+            setTally([tally[0] + 1, tally[1]])
+        else if (winner == -1)
+            setTally([tally[0], tally[1] + 1])
+    }, [winner])
 
     const resetGame = () => {
         setWinner(0)
@@ -89,8 +97,15 @@ export default function PlayArea() {
             <Image className="z-20 relative flex-initial" src={grid} alt="Tic-tac-toe grid" onClick={handleMove}
                 ref={gridRef}/>
             {markOnGrid(cells, gridRef)}
-            <div className="flex-1">
-
+            <div className="flex-1 flex flex-col justify-center items-center gap-y-[2rem]">
+                <div className="flex flex-col items-center">
+                    <h1 className="text-[2.5rem]"> { playerOne }</h1>
+                    <p className="text-[1.5rem]"> { tally[0] } </p>
+                </div>
+                <div className="flex flex-col items-center">
+                    <h1 className="text-[2.5rem]"> { playerTwo }</h1>
+                    <p className="text-[1.5rem]"> { tally[1] } </p>
+                </div>
             </div>
         </div>
     )

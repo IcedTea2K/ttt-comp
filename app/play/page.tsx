@@ -8,7 +8,7 @@ export default async function GamePlay() {
     return (
         <>
             <Header />
-            <PlayArea />
+            <PlayArea playerOne="Boyfriend" playerTwo="Girlfriend"/>
         </>
     ) 
 }
